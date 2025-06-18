@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Profile</title>
+</head>
+<body>
+    <h2>Welcome, {{ current_user.username }}</h2>
+
+    <h3>Uploaded Images</h3>
+    <ul>
+        {% for image in images %}
+            <li>
+                <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
+                <form method="POST" action="{{ url_for('delete_image', image_id=image['_id']) }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Upload New Image</h3>
+    <form method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h3>View Other Users</h3>
+    <ul>
+        {% for user in users %}
+            {% if user['_id'] != current_user.id %}
+                <li><a href="{{ url_for('view_profile', user_id=user['_id']) }}">{{ user['username'] }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
