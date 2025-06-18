@@ -62,14 +62,14 @@ def signup():
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(app.config['PROFILE_PIC_FOLDER'], filename)
                 file.save(filepath)
-                profile_pic = filepath
+                profile_pic = filename  # Save only the filename (not the full path)
 
         existing_user = mongo.db.users.find_one({'username': username})
 
         if existing_user:
             flash("Username already exists!", "error")
         else:
-            # Insert user with profile picture
+            # Insert user with profile picture (only saving the filename in DB)
             mongo.db.users.insert_one({'username': username, 'password': password, 'profile_pic': profile_pic})
             flash("Signup successful!", "success")
             return redirect(url_for('login'))
@@ -182,6 +182,19 @@ def comment_on_image(image_id):
 
     # Redirect to the image's original profile page (whether own or other user's)
     return redirect(request.referrer)
+# Route to view comments for a specific image
+@app.route('/comments/<image_id>')
+@login_required
+def view_comments(image_id):
+    # Find the image from MongoDB using the image_id
+    image = mongo.db.images.find_one({'_id': ObjectId(image_id)})
+
+    if not image:
+        flash("Image not found", "error")
+        return redirect(url_for('profile'))  # Redirect to profile if image not found
+
+    # Render a template with the image and its comments
+    return render_template('view_comments.html', image=image)
 
 
 if __name__ == '__main__':

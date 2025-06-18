@@ -2,14 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user['username'] }}'s Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #00b4d8, #f3a683); /* Vibrant gradient background */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite; /* Smooth gradient animation */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Profile Container */
+        .profile-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        /* Profile Heading */
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #fff, 0 0 20px #00b4d8; /* Glowing text */
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Uploaded Images Section */
+        ul {
+            list-style-type: none;
+            margin: 20px 0;
+        }
+
+        li {
+            margin-bottom: 30px;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        li img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.6);
+            margin-bottom: 10px;
+        }
+
+        /* Comment Section */
+        ul ul {
+            margin-top: 10px;
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        ul ul li {
+            margin-bottom: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #00b4d8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0288d1;
+        }
+
+        /* Link to Back */
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #00b4d8;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a:hover {
+            background-color: #0288d1;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .profile-container {
+                padding: 20px;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            input[type="text"] {
+                width: 90%;
+            }
+
+            button {
+                padding: 8px 15px;
+            }
+
+            a {
+                font-size: 0.9rem;
+            }
+        }
+
+    </style>
 </head>
 <body>
-    <h2>{{ user['username'] }}'s Profile</h2>
 
-    <h3>Uploaded Images</h3>
-    <ul>
-        {% for image in images %}
+    <div class="profile-container">
+        <h2>{{ user['username'] }}'s Profile</h2>
+
+        <h3>Uploaded Images</h3>
+        <ul>
+            {% for image in images %}
             <li>
                 <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
                 <ul>
@@ -22,9 +194,11 @@
                     <button type="submit">Comment</button>
                 </form>
             </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
 
-    <a href="{{ url_for('profile') }}">Back to your profile</a>
+        <a href="{{ url_for('profile') }}">Back to your profile</a>
+    </div>
+
 </body>
 </html>

@@ -2,55 +2,287 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #00b4d8, #f3a683); /* Vibrant gradient background */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite; /* Smooth gradient animation */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh; /* Ensure body stretches to the full height */
+            padding: 20px;
+            overflow-y: scroll; /* Enable scrolling */
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Profile Container */
+        .profile-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            margin-bottom: 20px; /* Space for scrolling */
+        }
+
+        /* Profile Heading */
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #fff, 0 0 20px #00b4d8; /* Glowing text */
+        }
+
+        /* Profile Image Styling */
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%; /* Circular shape */
+            border: 4px solid #00b4d8; /* Vibrant turquoise border */
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.6); /* Glowing effect */
+            object-fit: cover;
+        }
+
+        /* If no profile picture */
+        .no-profile-img {
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: #aaa;
+        }
+
+        /* Uploaded Images Grid */
+        .images-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* 1 image per row */
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .image-container {
+            width: 500px;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #f1f1f1;
+            margin: 0 auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 50%;
+            object-fit: cover;
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #00b4d8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0288d1;
+        }
+
+        /* Comment Section Styling */
+        .comment-form {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        /* Form Styling */
+        form {
+            margin-top: 20px;
+        }
+
+        /* Upload Image Section */
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* Logout and Links */
+        a {
+            color: #00b4d8;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Other Users Profile Section */
+        .other-users {
+            display: flex;
+            flex-wrap: wrap; /* Ensures users can be in multiple rows */
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 200px;
+        }
+
+        .user-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .user-card a {
+            color: #00b4d8;
+            font-weight: bold;
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Welcome, {{ current_user.username }}</h2>
 
-    <!-- Display Profile Picture -->
-    {% if current_user.profile_pic %}
-        <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic.split('/')[-1]) }}" alt="Profile Picture">
-    {% else %}
-        <p>No profile picture uploaded</p>
-    {% endif %}
+    <div class="profile-container">
+        <h2>Welcome, {{ current_user.username }}</h2>
 
-    <h3>Uploaded Images</h3>
-    <ul>
-        {% for image in images %}
-            <li>
-                <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
-                <p>Uploaded by: <a href="{{ url_for('view_profile', user_id=image['user_id']) }}">{{ image['user_id'] }}</a></p>
-                <form method="POST" action="{{ url_for('comment_on_image', image_id=image['_id']) }}">
-                    <input type="text" name="comment" placeholder="Add a comment" required>
-                    <button type="submit">Comment</button>
-                </form>
-                <form method="POST" action="{{ url_for('delete_image', image_id=image['_id']) }}">
-                    <button type="submit">Delete</button>
-                </form>
-                <ul>
-                    {% for comment in image.comments %}
-                        <li>{{ comment['comment'] }} - <strong>{{ comment['user_id'] }}</strong></li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+        <!-- Display Profile Picture -->
+        {% if current_user.profile_pic %}
+        <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic) }}" alt="Profile Picture" class="profile-img">
+        {% else %}
+        <div class="no-profile-img">No Image</div>
+        {% endif %}
 
-    <h3>Upload New Image</h3>
-    <form method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <button type="submit">Upload</button>
-    </form>
+        <h3>Uploaded Images</h3>
+        <div class="images-grid">
+            {% for image in images %}
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
+                    <p>Uploaded by: <a href="{{ url_for('view_profile', user_id=image['user_id']) }}">{{ image['user_id'] }}</a></p>
 
-    <h3>Other Users</h3>
-    <ul>
-        {% for user in users %}
-            {% if user['_id'] != current_user.id %}
-                <li><a href="{{ url_for('view_profile', user_id=user['_id']) }}">{{ user['username'] }}</a></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+                    <!-- Comment Form -->
+                    <div class="comment-form">
+                        <form method="POST" action="{{ url_for('comment_on_image', image_id=image['_id']) }}">
+                            <input type="text" name="comment" placeholder="Add a comment" required>
+                            <button type="submit">Comment</button>
+                        </form>
+                    </div>
 
-    <a href="{{ url_for('logout') }}">Logout</a>
+                    <!-- Button Container (Comment, Delete, View Comments) -->
+                    <div class="button-container">
+                        <!-- Delete Image Form -->
+                        <form method="POST" action="{{ url_for('delete_image', image_id=image['_id']) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+
+                        <!-- View Comments Button -->
+                        <a href="{{ url_for('view_comments', image_id=image['_id']) }}">
+                            <button>View Comments</button>
+                        </a>
+                    </div>
+
+                    <!-- Display Comments -->
+                    <ul>
+                        {% for comment in image.comments %}
+                            <li>{{ comment['comment'] }} - <strong>{{ comment['user_id'] }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h3>Upload New Image</h3>
+        <form method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <h3>Other Users</h3>
+        <div class="other-users">
+            {% for user in users %}
+                {% if user['_id'] != current_user.id %}
+                <div class="user-card">
+                    <!-- Display User Profile Picture -->
+                    {% if user.profile_pic %}
+                        <img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}" alt="User Profile Picture">
+                    {% else %}
+                        <div class="no-profile-img">No Image</div>
+                    {% endif %}
+                    <a href="{{ url_for('view_profile', user_id=user['_id']) }}">{{ user['username'] }}</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
 </body>
 </html>

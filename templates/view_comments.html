@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Comments</title>
+    <style>
+        /* Styling for the comments page */
+        .comments-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comment-item {
+            background-color: #f1f1f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .comment-item p {
+            margin: 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #00b4d8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #0288d1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="comments-container">
+        <h3>Comments for Image: {{ image['filename'] }}</h3>
+
+        <ul class="comment-list">
+            {% for comment in image.comments %}
+                <li class="comment-item">
+                    <p>{{ comment['comment'] }} - <strong>{{ comment['user_id'] }}</strong></p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('profile') }}" class="back-button">Back to Profile</a>
+    </div>
+
+</body>
+</html>

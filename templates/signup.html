@@ -2,19 +2,194 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Signup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            background: linear-gradient(135deg, #c1becd, #4c87e8); /* Modern gradient: purple to blue */
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite; /* Smooth gradient animation */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        /* Gradient Animation */
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Form container */
+        .login-container {
+            background: rgba(220, 96, 96, 0.4); /* Slight transparency for frosted effect */
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(15px); /* Frosted glass effect */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form heading */
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #fff, 0 0 20px #6a11cb, 0 0 30px #2575fc; /* Glowing text */
+        }
+
+        /* Form elements */
+        label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: block;
+            text-align: left;
+            color: #fff;
+            text-shadow: 0 0 5px #fff; /* Glowing label effect */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: 0.3s;
+            box-shadow: 0 0 15px #6a11cb, 0 0 30px #6a11cb; /* Glowing input fields */
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #2575fc;
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px #2575fc, 0 0 40px #2575fc; /* Glowing focus effect */
+        }
+
+        /* "Remember me" checkbox */
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .remember-me input {
+            margin-right: 10px;
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            font-size: 0.9rem;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+            color: #2575fc;
+        }
+
+        /* Submit Button */
+        button {
+            background: #2575fc;
+            border: none;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            box-shadow: 0 0 10px #2575fc, 0 0 30px #2575fc; /* Glowing button */
+        }
+
+        button:hover {
+            background: #b38be1;
+            box-shadow: 0 0 15px #561b93, 0 0 40px #7951a8; /* Glowing button hover effect */
+        }
+
+        /* Register Link */
+        p {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        a {
+            color: #7395cf;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Icon Styling */
+        .fa {
+            margin-right: 10px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Signup</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="username">Username</label>
-        <input type="text" name="username" required><br><br>
-        <label for="password">Password</label>
-        <input type="password" name="password" required><br><br>
-        <label for="profile_pic">Profile Picture</label>
-        <input type="file" name="profile_pic"><br><br>
-        <button type="submit">Signup</button>
-    </form>
-    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+
+    <div class="signup-container">
+        <h2><i class="fa fa-user-plus"></i> Signup</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <label for="username">Username</label>
+            <input type="text" name="username" required placeholder="Enter your username">
+
+            <label for="password">Password</label>
+            <input type="password" name="password" required placeholder="Enter your password">
+
+            <label for="profile_pic">Profile Picture</label>
+            <input type="file" name="profile_pic" accept="image/*">
+
+            <button type="submit"><i class="fa fa-sign-in-alt"></i> Signup</button>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
 </body>
 </html>
