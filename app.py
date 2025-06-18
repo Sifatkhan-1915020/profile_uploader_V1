@@ -20,6 +20,7 @@ login_manager.login_view = 'login'
 
 # File Upload Configuration
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['PROFILE_PIC_FOLDER'] = 'static/profile_pics'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 
@@ -30,10 +31,11 @@ def allowed_file(filename):
 
 # User Class for Flask-Login
 class User(UserMixin):
-    def __init__(self, username, password, _id):
+    def __init__(self, username, password, _id, profile_pic=None):
         self.id = _id
         self.username = username
         self.password = password
+        self.profile_pic = profile_pic
 
 
 # Load User by ID for Flask-Login
@@ -41,7 +43,7 @@ class User(UserMixin):
 def load_user(user_id):
     user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
     if user_data:
-        return User(user_data['username'], user_data['password'], str(user_data['_id']))
+        return User(user_data['username'], user_data['password'], str(user_data['_id']), user_data.get('profile_pic'))
     return None
 
 
@@ -51,12 +53,24 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        profile_pic = None
+
+        # Handle profile picture upload
+        if 'profile_pic' in request.files:
+            file = request.files['profile_pic']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['PROFILE_PIC_FOLDER'], filename)
+                file.save(filepath)
+                profile_pic = filepath
+
         existing_user = mongo.db.users.find_one({'username': username})
 
         if existing_user:
             flash("Username already exists!", "error")
         else:
-            mongo.db.users.insert_one({'username': username, 'password': password})
+            # Insert user with profile picture
+            mongo.db.users.insert_one({'username': username, 'password': password, 'profile_pic': profile_pic})
             flash("Signup successful!", "success")
             return redirect(url_for('login'))
 
@@ -72,7 +86,8 @@ def login():
         user_data = mongo.db.users.find_one({'username': username, 'password': password})
 
         if user_data:
-            user = User(user_data['username'], user_data['password'], str(user_data['_id']))
+            user = User(user_data['username'], user_data['password'], str(user_data['_id']),
+                        user_data.get('profile_pic'))
             login_user(user)
             return redirect(url_for('profile'))
 
@@ -121,7 +136,8 @@ def upload_image():
         file.save(filepath)
 
         # Save file information to MongoDB with the user's ID
-        mongo.db.images.insert_one({'filename': filename, 'filepath': filepath, 'user_id': current_user.id})
+        mongo.db.images.insert_one(
+            {'filename': filename, 'filepath': filepath, 'user_id': current_user.id, 'comments': []})
 
         return redirect('/profile')
 
@@ -151,6 +167,21 @@ def view_profile(user_id):
     user_images = mongo.db.images.find({'user_id': user_id})
     user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
     return render_template('profile_view.html', images=user_images, user=user_data)
+
+
+# Comment on image route
+@app.route('/comment/<image_id>', methods=['POST'])
+@login_required
+def comment_on_image(image_id):
+    comment = request.form['comment']
+    image = mongo.db.images.find_one({'_id': ObjectId(image_id)})
+
+    if image:
+        mongo.db.images.update_one({'_id': ObjectId(image_id)},
+                                   {'$push': {'comments': {'user_id': current_user.id, 'comment': comment}}})
+
+    # Redirect to the image's original profile page (whether own or other user's)
+    return redirect(request.referrer)
 
 
 if __name__ == '__main__':

@@ -12,6 +12,15 @@
         {% for image in images %}
             <li>
                 <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
+                <ul>
+                    {% for comment in image.comments %}
+                        <li>{{ comment['comment'] }} - <strong>{{ comment['user_id'] }}</strong></li>
+                    {% endfor %}
+                </ul>
+                <form method="POST" action="{{ url_for('comment_on_image', image_id=image['_id']) }}">
+                    <input type="text" name="comment" placeholder="Add a comment" required>
+                    <button type="submit">Comment</button>
+                </form>
             </li>
         {% endfor %}
     </ul>

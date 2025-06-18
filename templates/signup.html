@@ -6,11 +6,13 @@
 </head>
 <body>
     <h2>Signup</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <label for="username">Username</label>
         <input type="text" name="username" required><br><br>
         <label for="password">Password</label>
         <input type="password" name="password" required><br><br>
+        <label for="profile_pic">Profile Picture</label>
+        <input type="file" name="profile_pic"><br><br>
         <button type="submit">Signup</button>
     </form>
     <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>

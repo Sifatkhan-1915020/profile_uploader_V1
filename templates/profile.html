@@ -7,14 +7,31 @@
 <body>
     <h2>Welcome, {{ current_user.username }}</h2>
 
+    <!-- Display Profile Picture -->
+    {% if current_user.profile_pic %}
+        <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_pic.split('/')[-1]) }}" alt="Profile Picture">
+    {% else %}
+        <p>No profile picture uploaded</p>
+    {% endif %}
+
     <h3>Uploaded Images</h3>
     <ul>
         {% for image in images %}
             <li>
                 <img src="{{ url_for('static', filename='uploads/' + image['filename']) }}" alt="Image">
+                <p>Uploaded by: <a href="{{ url_for('view_profile', user_id=image['user_id']) }}">{{ image['user_id'] }}</a></p>
+                <form method="POST" action="{{ url_for('comment_on_image', image_id=image['_id']) }}">
+                    <input type="text" name="comment" placeholder="Add a comment" required>
+                    <button type="submit">Comment</button>
+                </form>
                 <form method="POST" action="{{ url_for('delete_image', image_id=image['_id']) }}">
                     <button type="submit">Delete</button>
                 </form>
+                <ul>
+                    {% for comment in image.comments %}
+                        <li>{{ comment['comment'] }} - <strong>{{ comment['user_id'] }}</strong></li>
+                    {% endfor %}
+                </ul>
             </li>
         {% endfor %}
     </ul>
@@ -25,7 +42,7 @@
         <button type="submit">Upload</button>
     </form>
 
-    <h3>View Other Users</h3>
+    <h3>Other Users</h3>
     <ul>
         {% for user in users %}
             {% if user['_id'] != current_user.id %}
